@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ms" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Maklum Balas | DOA Kelantan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Theme Variables */
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border-color: #e2e8f0;
+            --primary-color: #16a34a; /* DOA Green */
+            --primary-hover: #15803d;
+            --input-bg: #ffffff;
+            --input-focus-ring: rgba(22, 163, 74, 0.2);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables */
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --primary-color: #22c55e;
+            --primary-hover: #16a34a;
+            --input-bg: #0f172a;
+            --input-focus-ring: rgba(34, 197, 94, 0.2);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            transition: var(--transition);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--surface-color);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            padding: 2.5rem;
+            margin-top: 1rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo {
+            max-height: 100px;
+            margin-bottom: 1rem;
+            object-fit: contain;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--input-focus-ring);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-submit {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+            background-color: var(--bg-color);
+        }
+
+        .theme-toggle:hover {
+            color: var(--primary-color);
+            background-color: var(--border-color);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Toast Notification Styles */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            border-radius: 0.375rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* PDPA & Security Styles */
+        .pdpa-box {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .pdpa-box h3 {
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .pdpa-box ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        .consent-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .consent-group input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-top: 0.15rem;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+        .consent-group label {
+            cursor: pointer;
+            font-weight: normal;
+            font-size: 0.95rem;
+        }
+        .loader {
+            display: none;
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 0.5rem;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Success Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: var(--transition);
+            color: var(--text-primary);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(22, 163, 74, 0.1);
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .modal-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: currentColor;
+        }
+
+        .modal-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .modal-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .btn-submit {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            background-color: var(--text-secondary) !important;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* ADMIN & DASHBOARD STYLES */
+        .admin-section {
+            display: none; /* Disembunyikan awalnya */
+            width: 100%;
+        }
+        .admin-login-icon {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .admin-login-icon button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+        .admin-login-icon button:hover {
+            opacity: 1;
+            color: var(--primary-color);
+        }
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .stat-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .data-table-container {
+            overflow-x: auto;
+            margin-top: 2rem;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .data-table th, .data-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .data-table th {
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .chart-container {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: var(--input-bg);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 1.5rem;
+                margin-top: 3rem; /* Space for theme toggle if moved */
+            }
+            .theme-toggle {
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Theme Toggle Button -->
+        <button class="theme-toggle" id="themeToggle" aria-label="Tukar Tema" title="Tukar Tema">
+            <!-- Icon will be injected by JS -->
+        </button>
+
+        <!-- VIEW AWAM: HEADER & BORANG -->
+        <div id="publicView">
+            <div class="header">
+                <img src="https://i.postimg.cc/mZVBVg3Y/2.png" alt="Logo DOA Kelantan" class="logo">
+                <h1>Sistem Maklum Balas</h1>
+                <p>Sila isikan ruangan di bawah untuk memberikan maklum balas anda.</p>
+            </div>
+
+            <!-- Notis PDPA -->
+            <div id="pdpaSection">
+                <div class="pdpa-box">
+                    <h3>Polisi Perlindungan Data Peribadi (PDPA)</h3>
+                    <p>Selaras dengan Akta Perlindungan Data Peribadi 2010 (Akta 709), kami memohon kebenaran anda untuk mengumpul dan memproses maklumat yang diberikan. Sila ambil maklum:</p>
+                    <ul>
+                        <li>Maklumat ini <strong>hanya akan digunakan</strong> untuk tujuan semakan, tindakan dan rekod maklum balas sistem DOA Kelantan.</li>
+                        <li><strong>AMARAN PENTING:</strong> Jangan masukkan sebarang maklumat sensitif (seperti No. Kad Pengenalan, data kesihatan atau info perbankan) melainkan ia benar-benar diminta untuk siasatan khusus.</li>
+                        <li><strong>Tempoh Retensi:</strong> Data anda disimpan secara selamat dan akan dilupuskan selepas tempoh dua (2) tahun sekiranya tiada tindakan susulan diperlukan.</li>
+                    </ul>
+                </div>
+                
+                <div class="consent-group">
+                    <input type="checkbox" id="consentCheckbox">
+                    <label for="consentCheckbox">Saya telah membaca dan bersetuju membenarkan pengumpulan data peribadi saya berlandaskan syarat di atas.</label>
+                </div>
+
+                <button type="button" id="btnTeruskan" class="btn-submit" disabled>Teruskan ke Borang</button>
+            </div>
+
+            <!-- Borang Maklum Balas disembunyikan pada awalnya -->
+            <form id="feedbackForm" style="display: none;">
+                <div class="form-grid">
+                    
+                    <!-- 1. Dropdown -->
+                    <div class="form-group full-width">
+                        <label for="jenis">Jenis Maklum Balas <span style="color:red">*</span></label>
+                        <select id="jenis" name="jenis" required>
+                            <option value="" disabled selected>-- Sila Pilih --</option>
+                            <option value="Komen">Komen</option>
+                            <option value="Cadangan">Cadangan</option>
+                            <option value="Soalan">Soalan</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. Nama -->
+                    <div class="form-group">
+                        <label for="nama">Nama Penuh <span style="color:red">*</span></label>
+                        <input type="text" id="nama" name="nama" placeholder="Cth: Ahmad bin Ali" required>
+                    </div>
+
+                    <!-- 3. Email -->
+                    <div class="form-group">
+                        <label for="email">Alamat E-mel</label>
+                        <input type="email" id="email" name="email" placeholder="Cth: ahmad@domain.com">
+                    </div>
+
+                    <!-- 4. No Telefon / Whatsapp -->
+                    <div class="form-group">
+                        <label for="telefon">No. Telefon / WhatsApp <span style="color:red">*</span></label>
+                        <input type="tel" id="telefon" name="telefon" placeholder="Cth: 0123456789" required>
+                    </div>
+
+                    <!-- 5. Perkara (Tajuk) -->
+                    <div class="form-group">
+                        <label for="perkara">Perkara / Tajuk <span style="color:red">*</span></label>
+                        <input type="text" id="perkara" name="perkara" placeholder="Tajuk maklum balas anda" required>
+                    </div>
+
+                    <!-- 6. Ruang Maklum Balas -->
+                    <div class="form-group full-width">
+                        <label for="maklumbalas">Maklumat Lanjut <span style="color:red">*</span></label>
+                        <textarea id="maklumbalas" name="maklumbalas" placeholder="Sila taipkan maklum balas anda secara terperinci di sini..." required></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            Hantar Maklum Balas
+                            <span class="loader" id="submitLoader"></span>
+                        </button>
+                    </div>
+
+                </div> <!-- Tutup form-grid -->
+            </form>
+        </div> <!-- Tutup publicView -->
+
+        <!-- VIEW ADMIN LOGIN -->
+        <div id="adminLoginView" class="admin-section">
+            <div class="header">
+                <h2>Log Masuk Pentadbir</h2>
+                <p>Akses khas untuk pegawai bertugas</p>
+            </div>
+            <form id="adminLoginForm">
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label>E-mel</label>
+                    <input type="email" id="adminEmail" required>
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <label>Kata Laluan</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <button type="submit" class="btn-submit" id="adminLoginBtn">
+                    Log Masuk <span class="loader" id="loginLoader"></span>
+                </button>
+                <button type="button" class="btn-outline" style="width:100%; margin-top:1rem;" onclick="tukarView('publicView')">Batal</button>
+            </form>
+        </div>
+
+        <!-- VIEW TUKAR KATA LALUAN (FORCE) -->
+        <div id="changePasswordView" class="admin-section">
+            <div class="header">
+                <h2>Tukar Kata Laluan</h2>
+                <p>Ini adalah log masuk kali pertama. Anda diwajibkan menukar kata laluan baharu atas faktor keselamatan.</p>
+            </div>
+            <form id="changePasswordForm">
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label>Kata Laluan Lama / Sementara</label>
+                    <input type="password" id="oldPassword" required>
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <label>Kata Laluan Baharu</label>
+                    <input type="password" id="newPassword" required minlength="6">
+                </div>
+                <button type="submit" class="btn-submit" id="changePassBtn">
+                    Kemaskini Kata Laluan <span class="loader" id="changePassLoader"></span>
+                </button>
+            </form>
+        </div>
+
+        <!-- VIEW ADMIN DASHBOARD -->
+        <div id="adminDashboardView" class="admin-section">
+            <button class="btn-outline" onclick="logoutAdmin()">&larr; Log Keluar</button>
+            <div class="header">
+                <h2>Papan Pemuka Pentadbir</h2>
+                <p>Statistik Maklum Balas Semasa</p>
+            </div>
+
+            <div class="dashboard-cards">
+                <div class="stat-card">
+                    <h3 id="statKomen">0</h3>
+                    <p>Komen</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statCadangan">0</h3>
+                    <p>Cadangan</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statSoalan">0</h3>
+                    <p>Soalan</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="feedbackChart"></canvas>
+            </div>
+
+            <h3>Senarai Maklum Balas Terkini</h3>
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tarikh</th>
+                            <th>Jenis</th>
+                            <th>Nama</th>
+                            <th>Perkara</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ICON KUNCI & FOOTER -->
+    <div class="admin-login-icon">
+        <button onclick="tukarView('adminLoginView')" aria-label="Admin Login">
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+            </svg>
+        </button>
+    </div>
+    <footer>
+        <p>&copy; Copyright by DOA Kelantan</p>
+    </footer>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Modal Berjaya Hantar -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.9997 15.1709L19.1921 5.97852L20.6063 7.39273L9.9997 17.9993L3.63574 11.6354L5.04996 10.2212L9.9997 15.1709Z"></path></svg>
+            </div>
+            <h3>Maklum Balas Berjaya!</h3>
+            <p>Terima kasih atas maklum balas anda. Kami telah menerima makluman anda dan ia sedang diproses oleh pihak pengurusan. Salinan butiran turut dihantar ke e-mel anda.</p>
+            <button class="btn-submit" onclick="tutupModal()" style="margin-top:0;">Kembali ke Utama</button>
+        </div>
+    </div>
+
+    <!-- Pustaka Chart.js untuk Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // ===== TAMPAL URL APPS SCRIPT DI SINI SELEPAS DEPLOY =====
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxEccbc0AtY7OMssKDoA5ajwG0uuHCge8VaSs9KkWjzwzRI__hlefVBMycpHlMfk1IUZw/exec"; 
+        
+        let authToken = localStorage.getItem('adminToken') || null;
+        let chartInstance = null;
+
+        // --- Core UI & Theme Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.getElementById('themeToggle');
+            const htmlElement = document.documentElement;
+
+            const sunIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z"></path></svg>`;
+            const moonIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.3807 2.01886C9.91573 3.38768 9 5.3369 9 7.49999C9 11.6421 12.3579 15 16.5 15C18.2255 15 19.8136 14.4172 21.0963 13.4475C20.6125 18.285 16.536 22 11.5 22C6.25329 22 2 17.7467 2 12.5C2 7.6433 5.7951 3.62635 10.5982 2.14623C10.8407 2.07153 11.1118 2.03061 11.3807 2.01886ZM16.5 13C13.4624 13 11 10.5376 11 7.49999C11 5.91894 11.6669 4.49405 12.7214 3.50428C8.19632 4.19702 4.5 8.16912 4.5 12.5C4.5 16.366 7.63401 19.5 11.5 19.5C15.5413 19.5 18.8687 16.4258 19.3957 12.5028C18.4907 12.822 17.5186 13 16.5 13Z"></path></svg>`;
+
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            htmlElement.setAttribute('data-theme', savedTheme);
+            themeToggleBtn.innerHTML = savedTheme === 'light' ? moonIcon : sunIcon;
+
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = htmlElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                themeToggleBtn.innerHTML = newTheme === 'light' ? moonIcon : sunIcon;
+                
+                // Redraw chart if active to match theme colors
+                if (chartInstance) renderChart(window.lastChartData);
+            });
+
+            // Auto-login jika ada token aktif
+            if (authToken) {
+                tukarView('adminDashboardView');
+                loadDashboardData();
+            }
+        });
+
+        // --- Core API Wrapper (Menggunakan JSON & Text/Plain) ---
+        async function fetchAPI(action, payload) {
+            if (GAS_URL === "GANTI_DENGAN_URL_WEB_APP_ANDA") {
+                throw new Error("Sila tetapkan URL Apps Script (GAS_URL) terlebih dahulu di dalam kod.");
+            }
+
+            const requestBody = { action: action, ...payload };
+            
+            const response = await fetch(GAS_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(requestBody)
+            });
+
+            const result = await response.json();
+            if (result.status === "error") throw new Error(result.message);
+            return result;
+        }
+
+        // --- View Manager ---
+        function tukarView(viewId) {
+            document.getElementById('publicView').style.display = 'none';
+            document.getElementById('adminLoginView').style.display = 'none';
+            document.getElementById('changePasswordView').style.display = 'none';
+            document.getElementById('adminDashboardView').style.display = 'none';
+            
+            const view = document.getElementById(viewId);
+            view.style.display = 'block';
+            
+            // Fade-in effect
+            view.style.opacity = '0';
+            setTimeout(() => {
+                view.style.transition = 'opacity 0.4s ease';
+                view.style.opacity = '1';
+            }, 50);
+        }
+
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            const borderColor = type === 'success' ? 'var(--primary-color)' : '#ef4444';
+            toast.style.borderLeftColor = borderColor;
+            const icon = `<svg style="width:20px;height:20px;fill:${borderColor}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.9997 15.1709L19.1921 5.97852L20.6063 7.39273L9.9997 17.9993L3.63574 11.6354L5.04996 10.2212L9.9997 15.1709Z"></path></svg>`;
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
+        }
+
+        // --- Borang Maklum Balas Awam ---
+        const consentCheckbox = document.getElementById('consentCheckbox');
+        const btnTeruskan = document.getElementById('btnTeruskan');
+        const form = document.getElementById('feedbackForm');
+        const pdpaSection = document.getElementById('pdpaSection');
+        const successModal = document.getElementById('successModal');
+
+        consentCheckbox.addEventListener('change', function() { btnTeruskan.disabled = !this.checked; });
+        btnTeruskan.addEventListener('click', function() {
+            pdpaSection.style.display = 'none';
+            form.style.display = 'block';
+        });
+
+        // Fungsi tutup modal dan reset UI
+        function tutupModal() {
+            successModal.classList.remove('active');
+            form.style.display = 'none';
+            pdpaSection.style.display = 'block';
+            consentCheckbox.checked = false;
+            btnTeruskan.disabled = true;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const loader = document.getElementById('submitLoader');
+            btn.disabled = true; loader.style.display = 'inline-block';
+
+            const formData = new FormData(form);
+            const dataObj = {};
+            // Sanitize & bina JSON Object
+            formData.forEach((value, key) => {
+                dataObj[key] = value.replace(/[&<>'"]/g, 
+                    tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+            });
+
+            try {
+                await fetchAPI("SUBMIT_FEEDBACK", { data: dataObj });
+                // Tunjuk popup modal (menggantikan showToast untuk form submission)
+                form.reset();
+                successModal.classList.add('active');
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btn.disabled = false; loader.style.display = 'none';
+            }
+        });
+
+        // --- Admin Log Masuk ---
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('adminLoginBtn');
+            const loader = document.getElementById('loginLoader');
+            btn.disabled = true; loader.style.display = 'inline-block';
+
+            const emel = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+
+            try {
+                const res = await fetchAPI("LOGIN", { emel, password });
+                authToken = res.token;
+                localStorage.setItem('adminToken', authToken); // Simpan token
+                
+                if (res.mestiTukarPassword) {
+                    tukarView('changePasswordView');
+                } else {
+                    tukarView('adminDashboardView');
+                    loadDashboardData();
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btn.disabled = false; loader.style.display = 'none';
+            }
+        });
+
+        // --- Admin Tukar Kata Laluan ---
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('changePassBtn');
+            const loader = document.getElementById('changePassLoader');
+            btn.disabled = true; loader.style.display = 'inline-block';
+
+            const oldPass = document.getElementById('oldPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+
+            try {
+                await fetchAPI("TUKAR_PASSWORD", { token: authToken, passwordLama: oldPass, passwordBaru: newPass });
+                showToast('Kata laluan berjaya dikemaskini.');
+                tukarView('adminDashboardView');
+                loadDashboardData();
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btn.disabled = false; loader.style.display = 'none';
+            }
+        });
+
+        // --- Admin Papan Pemuka ---
+        async function loadDashboardData() {
+            try {
+                const res = await fetchAPI("GET_DASHBOARD", { token: authToken });
+                
+                // Update Cards
+                document.getElementById('statKomen').innerText = res.statistik.Komen || 0;
+                document.getElementById('statCadangan').innerText = res.statistik.Cadangan || 0;
+                document.getElementById('statSoalan').innerText = res.statistik.Soalan || 0;
+
+                // Update Table
+                const tbody = document.getElementById('tableBody');
+                tbody.innerHTML = '';
+                res.data.forEach(item => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${item.tarikh}</td>
+                            <td><span style="background:var(--border-color);padding:2px 8px;border-radius:12px;font-size:0.8rem">${item.jenis}</span></td>
+                            <td>${item.nama}</td>
+                            <td>${item.perkara}</td>
+                        </tr>
+                    `;
+                });
+
+                // Render Chart
+                window.lastChartData = res.statistik;
+                renderChart(res.statistik);
+
+            } catch (err) {
+                showToast(err.message, 'error');
+                if (err.message.includes("log masuk") || err.message.includes("Sesi")) {
+                    logoutAdmin();
+                }
+            }
+        }
+
+        function renderChart(statistik) {
+            if (!statistik) return;
+            const ctx = document.getElementById('feedbackChart').getContext('2d');
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#f8fafc' : '#0f172a';
+
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Komen', 'Cadangan', 'Soalan'],
+                    datasets: [{
+                        label: 'Jumlah Maklum Balas',
+                        data: [statistik.Komen || 0, statistik.Cadangan || 0, statistik.Soalan || 0],
+                        backgroundColor: ['#3b82f6', '#22c55e', '#eab308'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { stepSize: 1, color: textColor },
+                            grid: { color: isDark ? '#334155' : '#e2e8f0' }
+                        },
+                        x: {
+                            ticks: { color: textColor },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('adminToken');
+            authToken = null;
+            document.getElementById('adminLoginForm').reset();
+            tukarView('publicView');
+            showToast('Anda telah log keluar.');
+        }
+    </script>
+</body>
+</html>
